@@ -1,7 +1,10 @@
 const express = require('express');
 const sql = require('mssql');
+const cors = require('cors');
 
 const app = express();
+
+app.use(cors());
 
 const config = {
   user: 'dpadmin',
@@ -13,7 +16,7 @@ const config = {
   }
 };
 
-const port = process.env.PORT || 3030;
+const port = process.env.PORT || 3000;
 
 sql.connect(config)
 .then(pool => {
