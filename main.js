@@ -46,30 +46,29 @@ app.get('/weather', async (req, res) => {
   }
 });
 
-// Endpoint to fetch data from the weather table based on district
-app.get('/weather/:district', async (req, res) => {
-  const district = req.params.district;
-  try {
-    // Connect to the database
-    await sql.connect(config);
+const districts = ['Ampara', 'Anuradhapura', 'Bhadulla', 'Batticoloa', 'Colombo', 'Galle', 'Gampaha', 'Hambantota', 'Jaffna', 'Kalutara', 'Kandy'];
 
-    // Query to select data from the weather table based on district
-    const result = await sql.query`SELECT * FROM districts WHERE name = ${district}`;
+const generateRandomData = () => {
+    const temperature = (Math.random() * (35 - 20) + 20).toFixed(2);
+    const humidity = (Math.random() * (100 - 60) + 60).toFixed(2);
+    const airPressure = (Math.random() * (1020 - 1000) + 1000).toFixed(2);
+    const dist = districts[Math.floor(Math.random() * districts.length)]; // Randomly select a province
 
-    // Close the database connection
-    await sql.close();
+    const query = `UPDATE weather SET humidity=${humidity}, temp=${temperature}, air=${airPressure} WHERE district = ${dist}`;
+    connection.query(query, [temperature, humidity, airPressure, province], (err, result) => {
+        if (err) {
+            console.error('Error inserting data:', err);
+        } else {
+            console.log('Weather data inserted successfully');
+        }
+    });
+};
 
-    // Send the data as JSON in the response
-    res.json(result.recordset);
-  } catch (error) {
-    console.error('Error fetching data:', error.message);
-    res.status(500).send('Internal Server Error');
-  }
-});
+// Generate data every 5 minutes
+setInterval(generateRandomData, 5 * 60 * 1000);
 
-// app.get('/', (req, res) => {
-//   res.send('Hello, World!');
-// });
+// Generate initial data immediately
+generateRandomData();
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
