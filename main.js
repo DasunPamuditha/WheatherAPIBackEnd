@@ -93,6 +93,6 @@ app.get('/weather/:district', async (req, res) => {
 // // Generate initial data immediately
 // generateRandomData();
 
-// app.listen(port, () => {
-//   console.log(`Server is running on port ${port}`);
-// });
+ app.listen(port, () => {
+   console.log(`Server is running on port ${port}`);
+ });
